@@ -7,37 +7,63 @@ namespace ConsoleApp2.Implementation
 {
     public class ExemploVisitorFinal : ExemploBaseVisitor<ExemploValue>
     {
-        public IDictionary<string, ExemploValue> memory = new Dictionary<string, ExemploValue>();
+        public IDictionary<string, ExemploValue> _localMemory = new Dictionary<string, ExemploValue>();
 
         public override ExemploValue VisitVariableAtom([NotNull] ExemploParser.VariableAtomContext context)
         {
             if (context.GetText() is string key && !string.IsNullOrEmpty(key))
-                if (memory.TryGetValue(key, out ExemploValue value))
+            {
+                if (_localMemory.TryGetValue(key, out ExemploValue value))
                     return value;
                 else
-                    return new ExemploValue { Value = 0 };
-            //throw new Exception($"Variável '{key}' foi não encontrada");
+                    throw new ArgumentException("Variável não declarada");
+            }
             else
-                throw new Exception("Variável não foi informada");
+                throw new ArgumentNullException("Nome da variável não foi informado");
         }
 
         public override ExemploValue VisitNumberAtom([NotNull] ExemploParser.NumberAtomContext context)
         {
             if (double.TryParse(context.GetText(), NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
-                return new ExemploValue { Value = number };
+                return new ExemploValue(number);
             else
                 throw new Exception($"Não foi possível converter o valor '{context.GetText()}' em número.");
         }
+
+        public override ExemploValue VisitNullAtom([NotNull] ExemploParser.NullAtomContext context) =>
+            new ExemploValue(null);
 
         public override ExemploValue VisitVariableAssignment([NotNull] ExemploParser.VariableAssignmentContext context)
         {
             string key = context.VARIABLE().GetText();
             var value = Visit(context.expression());
+            string op = context.assignment_operator().GetText();
 
-            if (memory.ContainsKey(key))
+            if (!_localMemory.TryGetValue(key, out ExemploValue currentValue))
+                throw new Exception($"Varíavel '{key}' não foi declarada");
+
+            _localMemory[key] = op switch
+            {
+                "=" => value,
+                "+=" when currentValue.Value is string currentString && value.Value is string valueString => new ExemploValue(currentString + valueString),
+                "+=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue + value,
+                "-=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue - value,
+                "*=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue * value,
+                "/=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue / value,
+                _ => throw new ArithmeticException("Atribuição inválida"),
+            };
+            return _localMemory[key];
+        }
+
+        public override ExemploValue VisitVariableDeclaration([NotNull] ExemploParser.VariableDeclarationContext context)
+        {
+            string key = context.VARIABLE().GetText();
+            var value = Visit(context.expression());
+
+            if (_localMemory.ContainsKey(key))
                 throw new Exception($"Varíavel '{key}' já foi declarada");
 
-            memory.Add(key, value);
+            _localMemory.Add(key, value);
 
             return value;
         }
@@ -50,35 +76,109 @@ namespace ConsoleApp2.Implementation
 
         public override ExemploValue VisitPlusExpression([NotNull] ExemploParser.PlusExpressionContext context)
         {
-            if (double.TryParse(Visit(context.arithmetic_expression(0))?.Value?.ToString(), out double left) &&
-                double.TryParse(Visit(context.arithmetic_expression(1))?.Value?.ToString(), out double right))
-                return new ExemploValue { Value = left + right };
-            throw new Exception("Erro ao realizar soma");
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+
+            if (left.IsNumericValue() && right.IsNumericValue())
+                return left + right;
+            else if (left.Value is string leftString && right.Value is string rightString)
+                return new ExemploValue(leftString + rightString);
+
+            throw new ArithmeticException("Não foi possível somar os valores");
         }
 
         public override ExemploValue VisitMinusExpression([NotNull] ExemploParser.MinusExpressionContext context)
         {
-            if (double.TryParse(Visit(context.arithmetic_expression(0))?.Value?.ToString(), out double left) &&
-                double.TryParse(Visit(context.arithmetic_expression(1))?.Value?.ToString(), out double right))
-                return new ExemploValue { Value = left - right };
-            throw new Exception("Erro ao realizar subtração");
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+
+            if (left.IsNumericValue() && right.IsNumericValue())
+                return left - right;
+            throw new ArithmeticException("Não foi possível subtrair os valores");
         }
 
         public override ExemploValue VisitTimesExpression([NotNull] ExemploParser.TimesExpressionContext context)
         {
-            if (double.TryParse(Visit(context.arithmetic_expression(0))?.Value?.ToString(), out double left) &&
-                double.TryParse(Visit(context.arithmetic_expression(1))?.Value?.ToString(), out double right))
-                return new ExemploValue { Value = left * right };
-            throw new Exception("Erro ao realizar multiplicação");
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+
+            if (left.IsNumericValue() && right.IsNumericValue())
+                return left * right;
+            throw new ArithmeticException("Não foi possível multiplicar os valores");
         }
 
         public override ExemploValue VisitDivExpression([NotNull] ExemploParser.DivExpressionContext context)
         {
-            if (double.TryParse(Visit(context.arithmetic_expression(0))?.Value?.ToString(), out double left) &&
-                double.TryParse(Visit(context.arithmetic_expression(1))?.Value?.ToString(), out double right) &&
-                right != 0.0)
-                return new ExemploValue { Value = left / right };
-            throw new Exception("Erro ao realizar divisão");
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+
+            if (right.IsNumericValue() && (decimal)right == 0.0m)
+                throw new DivideByZeroException("Não é possível dividir por zero");
+
+            if (left.IsNumericValue() && right.IsNumericValue())
+                return left / right;
+            throw new ArithmeticException("Não foi possível dividir os valores");
+        }
+
+        public override ExemploValue VisitWhileExpression([NotNull] ExemploParser.WhileExpressionContext context)
+        {
+            while (bool.Parse(Visit(context.comparison_expression()).Value?.ToString()))
+            {
+                foreach (var ruleBlock in context.rule_block())
+                    Visit(ruleBlock);
+            }
+
+            return new ExemploValue(null);
+        }
+
+        public override ExemploValue VisitComparisonExpression([NotNull] ExemploParser.ComparisonExpressionContext context)
+        {
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+            string op = context.comparison_operator().GetText();
+
+            return op switch
+            {
+                "==" => left == right,
+                "!=" => left != right,
+                _ when left.Value is null || right.Value is null => throw new ArgumentNullException("Não é possível fazer a comparação entre valores nulos"),
+                ">=" => left >= right,
+                "<=" => left <= right,
+                ">" => left > right,
+                "<" => left < right,
+                _ => throw new InvalidOperationException("Operador de comparação inválido")
+            };
+        }
+
+        public override ExemploValue VisitAndComparisonExpression([NotNull] ExemploParser.AndComparisonExpressionContext context)
+        {
+            var left = Visit(context.comparison_expression(0));
+            var right = Visit(context.comparison_expression(1));
+
+            return new ExemploValue(bool.Parse(left.Value.ToString()) && bool.Parse(right.Value.ToString()));
+        }
+
+        public override ExemploValue VisitOrComparisonExpression([NotNull] ExemploParser.OrComparisonExpressionContext context)
+        {
+            var left = Visit(context.comparison_expression(0));
+            var right = Visit(context.comparison_expression(1));
+
+            return new ExemploValue(bool.Parse(left.Value.ToString()) || bool.Parse(right.Value.ToString()));
+        }
+
+        public override ExemploValue VisitIfStatement([NotNull] ExemploParser.IfStatementContext context)
+        {
+            if (Visit(context.comparison_expression()).Value is bool value ? value : false)
+            {
+                Visit(context.rule_block(0));
+            }
+            else
+            {
+                if (context.rule_block(1) != null)
+                    Visit(context.rule_block(1));
+            }
+
+            return new ExemploValue(null);
         }
     }
 }

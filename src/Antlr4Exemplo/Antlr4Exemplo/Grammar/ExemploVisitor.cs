@@ -92,6 +92,20 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPlusExpression([NotNull] ExemploParser.PlusExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>parenthesisComparisonExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesisComparisonExpression([NotNull] ExemploParser.ParenthesisComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>andComparisonExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAndComparisonExpression([NotNull] ExemploParser.AndComparisonExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.
 	/// </summary>
@@ -99,12 +113,26 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitComparisonExpression([NotNull] ExemploParser.ComparisonExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>parenthesisComparisonExpression</c>
+	/// Visit a parse tree produced by the <c>orComparisonExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParenthesisComparisonExpression([NotNull] ExemploParser.ParenthesisComparisonExpressionContext context);
+	Result VisitOrComparisonExpression([NotNull] ExemploParser.OrComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>whileExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.loop_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileExpression([NotNull] ExemploParser.WhileExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>variableDeclaration</c>
+	/// labeled alternative in <see cref="ExemploParser.variable_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableDeclaration([NotNull] ExemploParser.VariableDeclarationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>variableAssignment</c>
 	/// labeled alternative in <see cref="ExemploParser.assignment"/>.
@@ -113,12 +141,26 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableAssignment([NotNull] ExemploParser.VariableAssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ifStatement</c>
+	/// labeled alternative in <see cref="ExemploParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfStatement([NotNull] ExemploParser.IfStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>numberAtom</c>
 	/// labeled alternative in <see cref="ExemploParser.atom"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNumberAtom([NotNull] ExemploParser.NumberAtomContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>nullAtom</c>
+	/// labeled alternative in <see cref="ExemploParser.atom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNullAtom([NotNull] ExemploParser.NullAtomContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>variableAtom</c>
 	/// labeled alternative in <see cref="ExemploParser.atom"/>.
@@ -138,4 +180,10 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparison_operator([NotNull] ExemploParser.Comparison_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.assignment_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignment_operator([NotNull] ExemploParser.Assignment_operatorContext context);
 }

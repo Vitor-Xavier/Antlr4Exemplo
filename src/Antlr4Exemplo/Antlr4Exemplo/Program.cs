@@ -26,45 +26,68 @@ namespace ConsoleApp2
         {
             Console.WriteLine("Hello World!");
 
-            TestComparison();
-            return;
-
-            
-
-
-            var listForeachLimite = new List<double>();
-            var listForeachFor = new List<double>();
-            var listForeach = new List<Envelope>();
-
-            Stopwatch stopwatch = new Stopwatch();
-
-            var list = new List<Envelope>();
-            var operacoes = new string[] { "+", "-", "*", "/" };
-            for (int i = 0; i < 1000000; i++)
-            {
-                var random = new Random();
-                var formula = string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4}", random.Next(1, 500) + random.NextDouble(), operacoes[random.Next(0, 3)], random.Next(1, 500) + random.NextDouble(), operacoes[random.Next(0, 3)], random.Next(1, 500) + random.NextDouble());
-                list.Add(new Envelope
+            string text = @"
+                var teste = null;
+                if (teste == 3) 
                 {
-                    EnvelopeId = i,
-                    Formula = formula
-                });
+                    teste = 1;
+                }
+                else
+                {
+                    teste = 2;
+                }
+                teste *= 2; 
+                10 + teste;";
+            try
+            {
+                var parser = Setup(text);
+                var defaultParserTree = parser.rule_set();
+
+                var visitor = new ExemploVisitorFinal();
+                var result = visitor.Visit(defaultParserTree);
+
+                Console.WriteLine("## Exemplo");
+                Console.WriteLine($"Fórmula: {text}");
+                Console.WriteLine($"Resultado Final: {result.Value}");
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
-            // List
-            stopwatch.Start();
-            Parallel.ForEach(list, new ParallelOptions { MaxDegreeOfParallelism = 100 }, (item, i) =>
-             {
-                 ExemploParser parser = Setup(item.Formula);
-                 ExemploParser.ExpressionContext expressionContext = parser.expression();
+            //var listForeachLimite = new List<double>();
+            //var listForeachFor = new List<double>();
+            //var listForeach = new List<Envelope>();
 
-                 var visitor = new ExemploVisitorFinal();
-                 item.Resultado = (double)visitor.Visit(expressionContext).Value;
-                 item.Set = true;
-             });
-            stopwatch.Stop();
-            Console.WriteLine($"Elapsed time: {stopwatch.Elapsed}");
-            Console.WriteLine($"Count: {list.Where(x => x.Set).Count()}");
+            //Stopwatch stopwatch = new Stopwatch();
+
+            //var list = new List<Envelope>();
+            //var operacoes = new string[] { "+", "-", "*", "/" };
+            //for (int i = 0; i < 1000000; i++)
+            //{
+            //    var random = new Random();
+            //    var formula = string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} {4}", random.Next(1, 500) + random.NextDouble(), operacoes[random.Next(0, 3)], random.Next(1, 500) + random.NextDouble(), operacoes[random.Next(0, 3)], random.Next(1, 500) + random.NextDouble());
+            //    list.Add(new Envelope
+            //    {
+            //        EnvelopeId = i,
+            //        Formula = formula
+            //    });
+            //}
+
+            //// List
+            //stopwatch.Start();
+            //Parallel.ForEach(list, new ParallelOptions { MaxDegreeOfParallelism = 100 }, (item, i) =>
+            // {
+            //     ExemploParser parser = Setup(item.Formula);
+            //     ExemploParser.ExpressionContext expressionContext = parser.expression();
+
+            //     var visitor = new ExemploVisitorFinal();
+            //     item.Resultado = (double)visitor.Visit(expressionContext).Value;
+            //     item.Set = true;
+            // });
+            //stopwatch.Stop();
+            //Console.WriteLine($"Elapsed time: {stopwatch.Elapsed}");
+            //Console.WriteLine($"Count: {list.Where(x => x.Set).Count()}");
 
             // ConcurrentDictionary
             //Console.WriteLine("Concurrent dictionary");
@@ -147,16 +170,22 @@ namespace ConsoleApp2
 
         private static void TestComparison()
         {
-            string text = @"var teste = 10; 10 + teste";
-            ExemploParser parser = Setup(text);
-            var defaultParserTree = parser.rule_set();
+            string text = @"var teste = 10; teste += 20; 10 + teste;";
+            try
+            {
+                ExemploParser parser = Setup(text);
+                var defaultParserTree = parser.rule_set();
 
-            var visitor = new ExemploVisitorFinal();
-            var result = visitor.Visit(defaultParserTree);
+                var visitor = new ExemploVisitorFinal();
+                var result = visitor.Visit(defaultParserTree);
 
-            Console.WriteLine("## Exemplo");
-            Console.WriteLine($"Resultado: {text} = {result?.Value}");
-            return;
+                Console.WriteLine("## Exemplo");
+                Console.WriteLine($"Resultado: {text} = {result.Value}");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         private static void TestConcurrentDictionary()
