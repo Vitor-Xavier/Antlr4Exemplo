@@ -65,10 +65,10 @@ namespace ConsoleApp2.Implementation
         };
 
         public static explicit operator decimal(ExemploValue value) =>
-            decimal.Parse(value.Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
+            decimal.Parse(value.Value?.ToString());
 
         public static explicit operator double(ExemploValue value) =>
-            double.Parse(value.Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
+            double.Parse(value.Value?.ToString());
 
         public bool IsNumericValue() => Value?.IsNumericType() ?? false;
 
