@@ -50,6 +50,13 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpression([NotNull] ExemploParser.ExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>coalesceArithmeticExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCoalesceArithmeticExpression([NotNull] ExemploParser.CoalesceArithmeticExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// </summary>
@@ -126,6 +133,13 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWhileExpression([NotNull] ExemploParser.WhileExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>coalesceExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.null_coalescing_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCoalesceExpression([NotNull] ExemploParser.CoalesceExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>variableDeclaration</c>
 	/// labeled alternative in <see cref="ExemploParser.variable_declaration"/>.

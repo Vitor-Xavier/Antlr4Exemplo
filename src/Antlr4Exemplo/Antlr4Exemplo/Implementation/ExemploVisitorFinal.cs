@@ -120,6 +120,9 @@ namespace ConsoleApp2.Implementation
             throw new ArithmeticException("Não foi possível dividir os valores");
         }
 
+        public override ExemploValue VisitCoalesceArithmeticExpression([NotNull] ExemploParser.CoalesceArithmeticExpressionContext context) =>
+            Visit(context.null_coalescing_expression());
+
         public override ExemploValue VisitWhileExpression([NotNull] ExemploParser.WhileExpressionContext context)
         {
             while (bool.Parse(Visit(context.comparison_expression()).Value?.ToString()))
@@ -180,5 +183,8 @@ namespace ConsoleApp2.Implementation
 
             return new ExemploValue(null);
         }
+
+        public override ExemploValue VisitCoalesceExpression([NotNull] ExemploParser.CoalesceExpressionContext context) =>
+            new ExemploValue(Visit(context.atom()).Value ?? (context.null_coalescing_expression() != null ? Visit(context.null_coalescing_expression()).Value : null));
     }
 }

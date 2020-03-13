@@ -27,6 +27,7 @@ arithmetic_expression
     | arithmetic_expression DIV arithmetic_expression #divExpression
     | arithmetic_expression TIMES arithmetic_expression #timesExpression
     | LPAREN arithmetic_expression RPAREN #parenthesisExpression
+    | null_coalescing_expression #coalesceArithmeticExpression
     | atom #atomExpression
     ;
 
@@ -41,11 +42,11 @@ loop_expression
     : WHILE LPAREN comparison_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
     ;
 
-/* 
-* null_coalescing_expression
-*    : arithmetic_expression (COALESCE_OPERATOR null_coalescing_expression)? #coalesceExpression
-*    ;
-*/
+ 
+null_coalescing_expression
+    : atom (COALESCE_OPERATOR null_coalescing_expression)? #coalesceExpression
+    ;
+
 
 variable_declaration
     : VAR VARIABLE ASSIGNMENT expression SEMI #variableDeclaration
@@ -58,6 +59,7 @@ assignment
 statement
     : IF LPAREN comparison_expression RPAREN LBRACE rule_block* RBRACE (ELSE LBRACE rule_block RBRACE)? #ifStatement
     ;
+
 atom
     : NUMBER #numberAtom
     | NULL #nullAtom
