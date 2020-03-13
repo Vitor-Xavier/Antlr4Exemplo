@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace ConsoleApp2.Implementation
 {
@@ -183,13 +185,29 @@ namespace ConsoleApp2.Implementation
         {
             if (Visit(context.comparison_expression()).Value is bool value ? value : false)
             {
-                Visit(context.rule_block(0));
+                Visit(context.if_body());
             }
             else
             {
-                if (context.rule_block(1) != null)
-                    Visit(context.rule_block(1));
+                if (context.else_body() != null)
+                    Visit(context.else_body());
             }
+
+            return new ExemploValue(null);
+        }
+
+        public override ExemploValue VisitIfBody([NotNull] ExemploParser.IfBodyContext context)
+        {
+            foreach (var ruleBlock in context.rule_block())
+                Visit(ruleBlock);
+
+            return new ExemploValue(null);
+        }
+
+        public override ExemploValue VisitElseBody([NotNull] ExemploParser.ElseBodyContext context)
+        {
+            foreach (var ruleBlock in context.rule_block())
+                Visit(ruleBlock);
 
             return new ExemploValue(null);
         }

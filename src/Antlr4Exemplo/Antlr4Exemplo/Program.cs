@@ -21,13 +21,15 @@ namespace ConsoleApp2
                 if (teste == 3) 
                 {
                     teste = 1.5;
+                    b = 2;
                 }
                 else
                 {
+                    b = 1;
                     teste = 2;
                 }
                 teste *= 2; 
-                10 ^ teste;";
+                teste + b;";
 
             var result = Execute(text);
 
@@ -35,7 +37,7 @@ namespace ConsoleApp2
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}");
 
-            TestConcurrentDictionary();
+            //TestConcurrentDictionary();
         }
 
         private static ExemploParser Setup(string text)

@@ -58,7 +58,15 @@ assignment
 	;
 
 statement
-    : IF LPAREN comparison_expression RPAREN LBRACE rule_block* RBRACE (ELSE LBRACE rule_block RBRACE)? #ifStatement
+    : IF LPAREN comparison_expression RPAREN LBRACE if_body RBRACE (ELSE LBRACE else_body RBRACE)? #ifStatement
+    ;
+
+if_body
+    : rule_block* #ifBody
+    ;
+
+else_body
+    : rule_block* #elseBody
     ;
 
 atom
