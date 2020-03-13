@@ -78,6 +78,13 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAtomExpression([NotNull] ExemploParser.AtomExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>powExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPowExpression([NotNull] ExemploParser.PowExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesisExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// </summary>

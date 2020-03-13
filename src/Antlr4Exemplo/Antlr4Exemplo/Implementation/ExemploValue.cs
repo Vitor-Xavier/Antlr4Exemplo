@@ -67,6 +67,9 @@ namespace ConsoleApp2.Implementation
         public static explicit operator decimal(ExemploValue value) =>
             decimal.Parse(value.Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
 
+        public static explicit operator double(ExemploValue value) =>
+            double.Parse(value.Value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
+
         public bool IsNumericValue() => Value?.IsNumericType() ?? false;
 
         public override int GetHashCode() => Value?.GetHashCode() ?? 0;

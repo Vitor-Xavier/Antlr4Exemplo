@@ -26,6 +26,7 @@ arithmetic_expression
     | arithmetic_expression MINUS arithmetic_expression #minusExpression
     | arithmetic_expression DIV arithmetic_expression #divExpression
     | arithmetic_expression TIMES arithmetic_expression #timesExpression
+    | arithmetic_expression POW arithmetic_expression #powExpression
     | LPAREN arithmetic_expression RPAREN #parenthesisExpression
     | null_coalescing_expression #coalesceArithmeticExpression
     | atom #atomExpression
@@ -108,6 +109,7 @@ PLUS: '+';
 MINUS: '-';
 DIV: '/';
 TIMES: '*';
+POW: '^';
 
 LBRACE: '{';
 RBRACE: '}';

@@ -45,7 +45,7 @@ namespace ConsoleApp2.Implementation
             _localMemory[key] = op switch
             {
                 "=" => value,
-                "+=" when currentValue.Value is string currentString && value.Value is string valueString => new ExemploValue(currentString + valueString),
+                "+=" when currentValue.Value is string currentString => new ExemploValue(currentString + value.Value?.ToString()),
                 "+=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue + value,
                 "-=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue - value,
                 "*=" when currentValue.IsNumericValue() && value.IsNumericValue() => currentValue * value,
@@ -81,8 +81,8 @@ namespace ConsoleApp2.Implementation
 
             if (left.IsNumericValue() && right.IsNumericValue())
                 return left + right;
-            else if (left.Value is string leftString && right.Value is string rightString)
-                return new ExemploValue(leftString + rightString);
+            else if (left.Value is string leftString)
+                return new ExemploValue(leftString + right.Value?.ToString());
 
             throw new ArithmeticException("Não foi possível somar os valores");
         }
@@ -118,6 +118,16 @@ namespace ConsoleApp2.Implementation
             if (left.IsNumericValue() && right.IsNumericValue())
                 return left / right;
             throw new ArithmeticException("Não foi possível dividir os valores");
+        }
+
+        public override ExemploValue VisitPowExpression([NotNull] ExemploParser.PowExpressionContext context)
+        {
+            var left = Visit(context.arithmetic_expression(0));
+            var right = Visit(context.arithmetic_expression(1));
+
+            if (left.IsNumericValue() && right.IsNumericValue())
+                return new ExemploValue(Math.Pow((double)left, (double) right));
+            throw new ArithmeticException("Não foi possível elevar o valor");
         }
 
         public override ExemploValue VisitCoalesceArithmeticExpression([NotNull] ExemploParser.CoalesceArithmeticExpressionContext context) =>

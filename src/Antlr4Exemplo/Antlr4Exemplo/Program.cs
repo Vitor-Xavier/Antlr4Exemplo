@@ -37,7 +37,7 @@ namespace ConsoleApp2
                     teste = 2;
                 }
                 teste *= 2; 
-                10 + teste;";
+                10 ^ teste;";
             try
             {
                 var parser = Setup(text);
