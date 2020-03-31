@@ -1,16 +1,20 @@
 ﻿using Antlr4.Runtime;
+using Antlr4Exemplo.Listeners;
 using ConsoleApp2.Implementation;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
     class Program
     {
+        private static readonly ExemploErrorListener _exemploErrorListener = new ExemploErrorListener();
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -33,10 +37,21 @@ namespace ConsoleApp2
 
             var result = Execute(text);
 
+            if (_exemploErrorListener.ExemploErrors.Any())
+            {
+                Console.WriteLine("## Erro(s) de sintaxe");
+                foreach (var exemploError in _exemploErrorListener.ExemploErrors)
+                {
+                    Console.WriteLine($"Linha: {exemploError.Line}\nColuna: {exemploError.Column}\nCarácter: {exemploError.Char}\nMensagem: {exemploError.Message}\n");
+                }
+                return;
+            }
+
             Console.WriteLine("## Exemplo");
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}");
 
+            
             //TestConcurrentDictionary();
         }
 
@@ -54,6 +69,10 @@ namespace ConsoleApp2
         private static ExemploValue Execute(string text)
         {
             var parser = Setup(text);
+
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(_exemploErrorListener);
+
             var defaultParserTree = parser.rule_set();
 
             var visitor = new ExemploVisitorFinal();
