@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace ConsoleApp2.Implementation
+namespace Antlr4Exemplo.Implementation
 {
     public readonly struct ExemploValue
     {

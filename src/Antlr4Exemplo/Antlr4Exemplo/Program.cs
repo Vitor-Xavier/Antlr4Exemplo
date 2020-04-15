@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Antlr4Exemplo.Listeners;
-using ConsoleApp2.Implementation;
+using Antlr4Exemplo.Implementation;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConsoleApp2
+namespace Antlr4Exemplo
 {
     class Program
     {
@@ -66,14 +67,19 @@ namespace ConsoleApp2
             };
         }
 
-        private static ExemploValue Execute(string text)
+        private static IParseTree Evaluate(string text)
         {
             var parser = Setup(text);
 
             parser.RemoveErrorListeners();
             parser.AddErrorListener(_exemploErrorListener);
 
-            var defaultParserTree = parser.rule_set();
+            return parser.rule_set();
+        }
+
+        private static ExemploValue Execute(string text)
+        {
+            var defaultParserTree = Evaluate(text);
 
             var visitor = new ExemploVisitorFinal();
             return visitor.Visit(defaultParserTree);

@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
-namespace ConsoleApp2.Implementation
+namespace Antlr4Exemplo.Implementation
 {
     public class ExemploVisitorFinal : ExemploBaseVisitor<ExemploValue>
     {

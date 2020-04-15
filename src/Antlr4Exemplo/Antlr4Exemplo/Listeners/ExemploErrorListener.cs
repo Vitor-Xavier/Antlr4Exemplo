@@ -11,7 +11,14 @@ namespace Antlr4Exemplo.Listeners
 
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            ExemploErrors.Add(new ExemploError { Line = line, Column = charPositionInLine, Char = offendingSymbol.Text, Message = msg });
+            var message = e switch
+            {
+                NoViableAltException _ => $"Expressão inválida '{offendingSymbol}'",
+                InputMismatchException _ => $"Entrada '{offendingSymbol}' não esperada",
+                FailedPredicateException _ => $"Semántica '{offendingSymbol}' inválida",
+                _ => "Erro indefinido"
+            };
+            ExemploErrors.Add(new ExemploError { Line = line, Column = charPositionInLine, Char = offendingSymbol.Text, Message = message });
         }
     }
 }
