@@ -71,6 +71,12 @@ namespace Antlr4Exemplo
         {
             var parser = Setup(text);
 
+#if RELEASE
+            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
+#else
+            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
+#endif
+
             parser.RemoveErrorListeners();
             parser.AddErrorListener(_exemploErrorListener);
 

@@ -45,22 +45,22 @@ namespace Antlr4Exemplo.Implementation
 
         public static ExemploValue operator <=(ExemploValue left, ExemploValue right) => true switch
         {
-            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left != (decimal)right),
-            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate != rightDate),
+            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left <= (decimal)right),
+            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate <= rightDate),
             _ => throw new InvalidOperationException($"Comparação 'menor que ou igual', '<=' inválida entre os valores '{left.Value}' e '{right.Value}'")
         };
 
         public static ExemploValue operator >(ExemploValue left, ExemploValue right) => true switch
         {
-            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left == (decimal)right),
-            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate == rightDate),
+            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left > (decimal)right),
+            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate > rightDate),
             _ => throw new InvalidOperationException($"Comparação 'maior que', '>' inválida entre os valores '{left.Value}' e '{right.Value}'")
         };
 
         public static ExemploValue operator <(ExemploValue left, ExemploValue right) => true switch
         {
-            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left != (decimal)right),
-            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate != rightDate),
+            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left < (decimal)right),
+            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate < rightDate),
             _ => throw new InvalidOperationException($"Comparação 'menor que', '<' inválida entre os valores '{left.Value}' e '{right.Value}'")
         };
 
