@@ -50,6 +50,18 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpression([NotNull] ExemploParser.ExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.high_precedence_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitHigh_precedence_operator([NotNull] ExemploParser.High_precedence_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.low_precedence_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLow_precedence_operator([NotNull] ExemploParser.Low_precedence_operatorContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceArithmeticExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// </summary>
@@ -57,19 +69,12 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCoalesceArithmeticExpression([NotNull] ExemploParser.CoalesceArithmeticExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>minusExpression</c>
+	/// Visit a parse tree produced by the <c>highPrecedenceExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMinusExpression([NotNull] ExemploParser.MinusExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>timesExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitTimesExpression([NotNull] ExemploParser.TimesExpressionContext context);
+	Result VisitHighPrecedenceExpression([NotNull] ExemploParser.HighPrecedenceExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>atomExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
@@ -85,26 +90,19 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPowExpression([NotNull] ExemploParser.PowExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>lowPrecedenceExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLowPrecedenceExpression([NotNull] ExemploParser.LowPrecedenceExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesisExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitParenthesisExpression([NotNull] ExemploParser.ParenthesisExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>divExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitDivExpression([NotNull] ExemploParser.DivExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>plusExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPlusExpression([NotNull] ExemploParser.PlusExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesisComparisonExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.

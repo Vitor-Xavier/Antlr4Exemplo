@@ -21,12 +21,20 @@ expression
     | loop_expression
     ;
 
+high_precedence_operator
+    : TIMES 
+    | DIV
+    ;
+
+low_precedence_operator
+    : PLUS 
+    | MINUS
+    ;
+
 arithmetic_expression
-    : arithmetic_expression PLUS arithmetic_expression #plusExpression
-    | arithmetic_expression MINUS arithmetic_expression #minusExpression
-    | arithmetic_expression DIV arithmetic_expression #divExpression
-    | arithmetic_expression TIMES arithmetic_expression #timesExpression
-    | arithmetic_expression POW arithmetic_expression #powExpression
+    : arithmetic_expression POW arithmetic_expression #powExpression
+    | arithmetic_expression high_precedence_operator arithmetic_expression #highPrecedenceExpression
+    | arithmetic_expression low_precedence_operator arithmetic_expression #lowPrecedenceExpression
     | LPAREN arithmetic_expression RPAREN #parenthesisExpression
     | null_coalescing_expression #coalesceArithmeticExpression
     | atom #atomExpression
@@ -42,12 +50,10 @@ comparison_expression
 loop_expression
     : WHILE LPAREN comparison_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
     ;
-
  
 null_coalescing_expression
     : atom (COALESCE_OPERATOR null_coalescing_expression)? #coalesceExpression
     ;
-
 
 variable_declaration
     : VAR VARIABLE ASSIGNMENT expression SEMI #variableDeclaration

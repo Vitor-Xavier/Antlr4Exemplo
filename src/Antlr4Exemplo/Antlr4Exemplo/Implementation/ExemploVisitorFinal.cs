@@ -74,50 +74,34 @@ namespace Antlr4Exemplo.Implementation
         public override ExemploValue VisitParenthesisComparisonExpression([NotNull] ExemploParser.ParenthesisComparisonExpressionContext context) =>
             Visit(context.comparison_expression());
 
-        public override ExemploValue VisitPlusExpression([NotNull] ExemploParser.PlusExpressionContext context)
+        public override ExemploValue VisitHighPrecedenceExpression([NotNull] ExemploParser.HighPrecedenceExpressionContext context)
         {
             var left = Visit(context.arithmetic_expression(0));
             var right = Visit(context.arithmetic_expression(1));
+            string op = context.high_precedence_operator().GetText();
 
-            if (left.IsNumericValue() && right.IsNumericValue())
-                return left + right;
-            else if (left.Value is string leftString)
-                return new ExemploValue(leftString + right.Value?.ToString());
-
-            throw new ArithmeticException("Não foi possível somar os valores");
-        }
-
-        public override ExemploValue VisitMinusExpression([NotNull] ExemploParser.MinusExpressionContext context)
-        {
-            var left = Visit(context.arithmetic_expression(0));
-            var right = Visit(context.arithmetic_expression(1));
-
-            if (left.IsNumericValue() && right.IsNumericValue())
-                return left - right;
-            throw new ArithmeticException("Não foi possível subtrair os valores");
-        }
-
-        public override ExemploValue VisitTimesExpression([NotNull] ExemploParser.TimesExpressionContext context)
-        {
-            var left = Visit(context.arithmetic_expression(0));
-            var right = Visit(context.arithmetic_expression(1));
-
-            if (left.IsNumericValue() && right.IsNumericValue())
+            if (op == "*" && left.IsNumericValue() && right.IsNumericValue())
                 return left * right;
-            throw new ArithmeticException("Não foi possível multiplicar os valores");
+            if (op == "/" && left.IsNumericValue() && right.IsNumericValue() && (decimal)right != 0.0m)
+                return left / right;
+
+            throw new ArithmeticException($"Não foi executar o comando '{left} {op} {right}'");
         }
 
-        public override ExemploValue VisitDivExpression([NotNull] ExemploParser.DivExpressionContext context)
+        public override ExemploValue VisitLowPrecedenceExpression([NotNull] ExemploParser.LowPrecedenceExpressionContext context)
         {
             var left = Visit(context.arithmetic_expression(0));
             var right = Visit(context.arithmetic_expression(1));
+            string op = context.low_precedence_operator().GetText();
 
-            if (right.IsNumericValue() && (decimal)right == 0.0m)
-                throw new DivideByZeroException("Não é possível dividir por zero");
+            if (op == "+" && left.IsNumericValue() && right.IsNumericValue())
+                return left + right;
+            else if (op == "+" && left.Value is string leftString)
+                return new ExemploValue(leftString + right.Value?.ToString());
+            if (op == "-" && left.IsNumericValue() && right.IsNumericValue())
+                return left - right;
 
-            if (left.IsNumericValue() && right.IsNumericValue())
-                return left / right;
-            throw new ArithmeticException("Não foi possível dividir os valores");
+            throw new ArithmeticException($"Não foi executar o comando '{left} {op} {right}'");
         }
 
         public override ExemploValue VisitPowExpression([NotNull] ExemploParser.PowExpressionContext context)

@@ -64,6 +64,26 @@ public partial class ExemploBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitExpression([NotNull] ExemploParser.ExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.high_precedence_operator"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitHigh_precedence_operator([NotNull] ExemploParser.High_precedence_operatorContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.low_precedence_operator"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitLow_precedence_operator([NotNull] ExemploParser.Low_precedence_operatorContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceArithmeticExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// <para>
@@ -75,7 +95,7 @@ public partial class ExemploBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCoalesceArithmeticExpression([NotNull] ExemploParser.CoalesceArithmeticExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>minusExpression</c>
+	/// Visit a parse tree produced by the <c>highPrecedenceExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -84,18 +104,7 @@ public partial class ExemploBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMinusExpression([NotNull] ExemploParser.MinusExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>timesExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitTimesExpression([NotNull] ExemploParser.TimesExpressionContext context) { return VisitChildren(context); }
+	public virtual Result VisitHighPrecedenceExpression([NotNull] ExemploParser.HighPrecedenceExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>atomExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
@@ -119,6 +128,17 @@ public partial class ExemploBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitPowExpression([NotNull] ExemploParser.PowExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>lowPrecedenceExpression</c>
+	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitLowPrecedenceExpression([NotNull] ExemploParser.LowPrecedenceExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesisExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
 	/// <para>
@@ -129,28 +149,6 @@ public partial class ExemploBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParenthesisExpression([NotNull] ExemploParser.ParenthesisExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>divExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitDivExpression([NotNull] ExemploParser.DivExpressionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>plusExpression</c>
-	/// labeled alternative in <see cref="ExemploParser.arithmetic_expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitPlusExpression([NotNull] ExemploParser.PlusExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesisComparisonExpression</c>
 	/// labeled alternative in <see cref="ExemploParser.comparison_expression"/>.
