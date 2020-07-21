@@ -79,10 +79,15 @@ atom
     : NUMBER #numberAtom
     | NULL #nullAtom
     | variable #variableAtom
+    | external #externalAtom
     ;
 
 variable
     : VARIABLE
+    ;
+
+external
+    : EXTERNAL VARIABLE
     ;
 
 comparison_operator
@@ -145,6 +150,8 @@ OR: '||';
 IF: 'if';
 ELSE: 'else';
 WHILE: 'while';
+
+EXTERNAL: '@';
 
 COALESCE_OPERATOR: '??';
 

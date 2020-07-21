@@ -22,19 +22,9 @@ namespace Antlr4Exemplo.Implementation
         public static ExemploValue operator /(ExemploValue left, ExemploValue right) => 
             new ExemploValue((decimal)left / (decimal)right);
 
-        public static ExemploValue operator ==(ExemploValue left, ExemploValue right) => true switch
-        {
-            _ when left.IsNumericValue() && right.IsNumericValue() => new ExemploValue((decimal) left == (decimal) right),
-            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate == rightDate),
-            _ => new ExemploValue(left.Value == right.Value)
-        };
+        public static ExemploValue operator ==(ExemploValue left, ExemploValue right) => new ExemploValue(left.Equals(right));
 
-        public static ExemploValue operator !=(ExemploValue left, ExemploValue right) => true switch
-        {
-            _ when left.IsNumericType() && right.IsNumericType() => new ExemploValue((decimal)left != (decimal)right),
-            _ when left.Value is DateTime leftDate && right.Value is DateTime rightDate => new ExemploValue(leftDate != rightDate),
-            _ => new ExemploValue(left.Value != right.Value)
-        };
+        public static ExemploValue operator !=(ExemploValue left, ExemploValue right) => new ExemploValue(!left.Equals(right));
 
         public static ExemploValue operator >=(ExemploValue left, ExemploValue right) => true switch
         {

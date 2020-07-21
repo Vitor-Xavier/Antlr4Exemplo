@@ -21,7 +21,6 @@
 
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
 
 /// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
@@ -29,7 +28,6 @@ using IToken = Antlr4.Runtime.IToken;
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-[System.CLSCompliant(false)]
 public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExemploParser.rule_set"/>.
@@ -202,11 +200,24 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableAtom([NotNull] ExemploParser.VariableAtomContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>externalAtom</c>
+	/// labeled alternative in <see cref="ExemploParser.atom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExternalAtom([NotNull] ExemploParser.ExternalAtomContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExemploParser.variable"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVariable([NotNull] ExemploParser.VariableContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExemploParser.external"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExternal([NotNull] ExemploParser.ExternalContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExemploParser.comparison_operator"/>.
 	/// </summary>

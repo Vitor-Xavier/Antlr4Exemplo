@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Antlr4Exemplo.Listeners;
 using Antlr4Exemplo.Implementation;
+using Antlr4Exemplo.Listeners;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,27 +16,15 @@ namespace Antlr4Exemplo
     {
         private static readonly ExemploErrorListener _exemploErrorListener = new ExemploErrorListener();
 
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Antlr 4 C# Exemplo\n");
 
             string text = @"
-                var teste = null;
-                var b = 4.1 * 2;
-                if (teste == 3) 
-                {
-                    teste = 1.5;
-                    b = 2;
-                }
-                else
-                {
-                    b = 1;
-                    teste = 2;
-                }
-                teste *= 2; 
-                teste + b;";
+                var b = 100 / 10 * @Teste;
+                b;";
 
-            var result = Execute(text);
+            var result = Execute(text, new Dictionary<string, ExemploValue> { { "Teste", new ExemploValue(10) } });
 
             if (_exemploErrorListener.ExemploErrors.Any())
             {
@@ -52,7 +40,6 @@ namespace Antlr4Exemplo
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}");
 
-            
             //TestConcurrentDictionary();
         }
 
@@ -83,12 +70,30 @@ namespace Antlr4Exemplo
             return parser.rule_set();
         }
 
-        private static ExemploValue Execute(string text)
+        /// <summary>
+        /// Analisa e executa uma entrada de texto.
+        /// </summary>
+        /// <param name="text">Texto</param>
+        /// <param name="externalMemory">Memória Externa para a execução</param>
+        /// <returns>Resultado da Execução</returns>
+        private static ExemploValue Execute(string text, IDictionary<string, ExemploValue> externalMemory = null)
         {
             var defaultParserTree = Evaluate(text);
 
-            var visitor = new ExemploVisitorFinal();
+            var visitor = new ExemploVisitorFinal(externalMemory);
             return visitor.Visit(defaultParserTree);
+        }
+
+        /// <summary>
+        /// Executa uma fórmula já analisada.
+        /// </summary>
+        /// <param name="parseTree">Fórmula analisada</param>
+        /// <param name="externalMemory">Memória Externa para a execução</param>
+        /// <returns>Resultado da Execução</returns>
+        private static ExemploValue Execute(IParseTree parseTree, IDictionary<string, ExemploValue> externalMemory = null)
+        {
+            var visitor = new ExemploVisitorFinal(externalMemory);
+            return visitor.Visit(parseTree);
         }
 
         private static void TestConcurrentDictionary()
@@ -100,7 +105,7 @@ namespace Antlr4Exemplo
 
             var operacoes = new string[] { "+", "-", "*", "/", "^" };
 
-            int size = 1000000;
+            int size = 10000;
             var scripts = new string[size];
 
             var random = new Random();

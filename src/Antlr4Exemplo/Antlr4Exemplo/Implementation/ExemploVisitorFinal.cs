@@ -9,6 +9,14 @@ namespace Antlr4Exemplo.Implementation
     {
         public IDictionary<string, ExemploValue> _localMemory = new Dictionary<string, ExemploValue>();
 
+        public IDictionary<string, ExemploValue> _externalMemory;
+
+        public ExemploVisitorFinal(IDictionary<string, ExemploValue> externalMemory)
+        {
+            externalMemory ??= new Dictionary<string, ExemploValue>();
+            _externalMemory = externalMemory;
+        }
+
         public override ExemploValue VisitVariableAtom([NotNull] ExemploParser.VariableAtomContext context)
         {
             if (context.GetText() is string key && !string.IsNullOrEmpty(key))
@@ -20,6 +28,19 @@ namespace Antlr4Exemplo.Implementation
             }
             else
                 throw new ArgumentNullException("Nome da variável não foi informado");
+        }
+
+        public override ExemploValue VisitExternalAtom([NotNull] ExemploParser.ExternalAtomContext context)
+        {
+            if (context.external().GetText() is string key && !string.IsNullOrEmpty(key))
+            {
+                if (_externalMemory.TryGetValue(key.Replace("@", string.Empty), out ExemploValue value))
+                    return value;
+                else
+                    throw new ArgumentException("Variável externa não encontrada");
+            }
+            else
+                throw new ArgumentNullException("Nome da variável externa não foi informado");
         }
 
         public override ExemploValue VisitNumberAtom([NotNull] ExemploParser.NumberAtomContext context)
@@ -165,7 +186,7 @@ namespace Antlr4Exemplo.Implementation
 
         public override ExemploValue VisitIfStatement([NotNull] ExemploParser.IfStatementContext context)
         {
-            if (Visit(context.comparison_expression()).Value is bool value ? value : false)
+            if (Visit(context.comparison_expression()).Value is bool value && value)
             {
                 Visit(context.if_body());
             }
