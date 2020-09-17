@@ -1,16 +1,13 @@
-# Antlr4 - Exemplo
+# ANTLR - Exemplo
 
-## Instalação
+## Objetivo
 
-1. Baixar e instalar o [Java Development Kit](https://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html).
-1. Alterar a variável de ambiente do Java para a nova versão instalada.
+Este projeto visa demonstrar alguns dos conceitos básicos da ferramenta Antlr4, assim como sua configuração e etapas iniciais para execução de um projeto 
 
-    Exemplo: `$Env:JAVA_HOME = "C:\Program Files\Java\jdk1.8.0_231"`
+## O que é?
 
-1. Editar a variável de ambiente PATH para incluir o caminho da variável do Java.
+ANTLR (ANother Tool for Language Recognition) é um poderoso gerador para leituea, processamento, execução, ou tradução  de texto estruturado ou arquivos binários. É comummente utilizado para arquitetar linguagens, ferramentas e frameworks. A partir de uma gramática, o ANTLR gera um analisador que pode executar e navegar em uma árvore estruturada.
 
-    Exemplo: `$Env:path += ";%JAVA_HOME%"`
+## Referências
 
-1. Baixar [Antlr4](https://www.antlr.org/download/) e adicionar no diretório `C:\JavaLib` adicionar a variável CLASSPATH.
-
-    Exemplo: `$Env:CLASSPATH += "C:\JavaLib\antlr-<versão-instalada>.jar;"`
+- [ANTLR](https://www.antlr.org/)
