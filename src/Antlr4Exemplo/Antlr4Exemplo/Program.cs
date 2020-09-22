@@ -80,7 +80,7 @@ namespace Antlr4Exemplo
         {
             var defaultParserTree = Evaluate(text);
 
-            var visitor = new ExemploVisitorFinal(externalMemory);
+            var visitor = new ExemploVisitor(externalMemory);
             return visitor.Visit(defaultParserTree);
         }
 
@@ -92,7 +92,7 @@ namespace Antlr4Exemplo
         /// <returns>Resultado da Execução</returns>
         private static ExemploValue Execute(IParseTree parseTree, IDictionary<string, ExemploValue> externalMemory = null)
         {
-            var visitor = new ExemploVisitorFinal(externalMemory);
+            var visitor = new ExemploVisitor(externalMemory);
             return visitor.Visit(parseTree);
         }
 

@@ -5,13 +5,13 @@ using System.Globalization;
 
 namespace Antlr4Exemplo.Implementation
 {
-    public class ExemploVisitorFinal : ExemploBaseVisitor<ExemploValue>
+    public class ExemploVisitor : ExemploBaseVisitor<ExemploValue>
     {
         public IDictionary<string, ExemploValue> _localMemory = new Dictionary<string, ExemploValue>();
 
         public IDictionary<string, ExemploValue> _externalMemory;
 
-        public ExemploVisitorFinal(IDictionary<string, ExemploValue> externalMemory)
+        public ExemploVisitor(IDictionary<string, ExemploValue> externalMemory)
         {
             externalMemory ??= new Dictionary<string, ExemploValue>();
             _externalMemory = externalMemory;
