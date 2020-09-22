@@ -1,6 +1,4 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Antlr4Exemplo.Implementation;
+﻿using Antlr4Exemplo.Implementation;
 using Antlr4Exemplo.Listeners;
 using System;
 using System.Collections.Concurrent;
@@ -14,8 +12,6 @@ namespace Antlr4Exemplo
 {
     class Program
     {
-        private static readonly ExemploErrorListener _exemploErrorListener = new ExemploErrorListener();
-
         static void Main()
         {
             Console.WriteLine("Antlr 4 C# Exemplo\n");
@@ -24,12 +20,14 @@ namespace Antlr4Exemplo
                 var b = 100 / 10 * @Teste;
                 b;";
 
-            var result = Execute(text, new Dictionary<string, ExemploValue> { { "Teste", new ExemploValue(10) } });
+            var exemploErrorListener = new ExemploErrorListener();
+            var parseTree = ExemploHandler.Evaluate(text, exemploErrorListener);
+            var result = ExemploHandler.Execute(parseTree, new Dictionary<string, ExemploValue> { { "Teste", new ExemploValue(10) } });
 
-            if (_exemploErrorListener.ExemploErrors.Any())
+            if (exemploErrorListener.ExemploErrors.Any())
             {
                 Console.WriteLine("## Erro(s) de sintaxe");
-                foreach (var exemploError in _exemploErrorListener.ExemploErrors)
+                foreach (var exemploError in exemploErrorListener.ExemploErrors)
                 {
                     Console.WriteLine($"Linha: {exemploError.Line}\nColuna: {exemploError.Column}\nCarácter: {exemploError.Char}\nMensagem: {exemploError.Message}\n");
                 }
@@ -40,63 +38,83 @@ namespace Antlr4Exemplo
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}");
 
-            //TestConcurrentDictionary();
-        }
-
-        private static ExemploParser Setup(string text)
-        {
-            ICharStream target = new AntlrInputStream(text);
-            ITokenSource lexer = new ExemploLexer(target);
-            ITokenStream tokens = new CommonTokenStream(lexer);
-            return new ExemploParser(tokens)
-            {
-                BuildParseTree = true
-            };
-        }
-
-        private static IParseTree Evaluate(string text)
-        {
-            var parser = Setup(text);
-
-#if RELEASE
-            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
-#else
-            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
-#endif
-
-            parser.RemoveErrorListeners();
-            parser.AddErrorListener(_exemploErrorListener);
-
-            return parser.rule_set();
-        }
-
-        /// <summary>
-        /// Analisa e executa uma entrada de texto.
-        /// </summary>
-        /// <param name="text">Texto</param>
-        /// <param name="externalMemory">Memória Externa para a execução</param>
-        /// <returns>Resultado da Execução</returns>
-        private static ExemploValue Execute(string text, IDictionary<string, ExemploValue> externalMemory = null)
-        {
-            var defaultParserTree = Evaluate(text);
-
-            var visitor = new ExemploVisitor(externalMemory);
-            return visitor.Visit(defaultParserTree);
-        }
-
-        /// <summary>
-        /// Executa uma fórmula já analisada.
-        /// </summary>
-        /// <param name="parseTree">Fórmula analisada</param>
-        /// <param name="externalMemory">Memória Externa para a execução</param>
-        /// <returns>Resultado da Execução</returns>
-        private static ExemploValue Execute(IParseTree parseTree, IDictionary<string, ExemploValue> externalMemory = null)
-        {
-            var visitor = new ExemploVisitor(externalMemory);
-            return visitor.Visit(parseTree);
+            TestConcurrentDictionary();
         }
 
         private static void TestConcurrentDictionary()
+        {
+            Console.WriteLine("## Concurrent Dictionary");
+
+            var exceptions = new ConcurrentQueue<Exception>();
+            var results = new ConcurrentDictionary<int, decimal>();
+
+            string texto = @"
+                var result = null;
+                if (@Operation == ""+"") {
+                    result = @FirstValue + @SecondValue;
+                }
+                else if (@Operation == ""-"") {
+                    result = @FirstValue - @SecondValue;
+                }
+                else if (@Operation == ""*"") {
+                    result = @FirstValue * @SecondValue;
+                }
+                else if (@Operation == ""/"") {
+                    result = @FirstValue / @SecondValue;
+                }
+                else if (@Operation == ""^"") {
+                    result = @FirstValue ^ @SecondValue;
+                }
+                result;
+            ";
+
+            var exemploErrorListener = new ExemploErrorListener();
+            var parseTree = ExemploHandler.Evaluate(texto, exemploErrorListener);
+
+            if (exemploErrorListener.ExemploErrors.Any())
+            {
+                Console.WriteLine("## Erro(s) de sintaxe TestConcurrentDictionary");
+                foreach (var exemploError in exemploErrorListener.ExemploErrors)
+                {
+                    Console.WriteLine($"Linha: {exemploError.Line}\nColuna: {exemploError.Column}\nCarácter: {exemploError.Char}\nMensagem: {exemploError.Message}\n");
+                }
+                return;
+            }
+
+            var operacoes = new string[] { "+", "-", "*", "/", "^" };
+
+            int size = 100000;
+            var scripts = new IDictionary<string, ExemploValue>[size];
+
+            var random = new Random();
+            for (int i = 0; i < size; i++)
+                scripts[i] = new Dictionary<string, ExemploValue> {
+                    { "Operation", new ExemploValue(operacoes[random.Next(0, 4)]) },
+                    { "FirstValue", new ExemploValue(random.Next(1, 250)) },
+                    { "SecondValue", new ExemploValue(random.Next(1, 250)) }
+                };
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Parallel.For(0, size, i =>
+            {
+                try
+                {
+                    var result = ExemploHandler.Execute(parseTree, scripts[i]);
+                    results.TryAdd(i, (decimal)result);
+                }
+                catch (Exception e)
+                {
+                    exceptions.Enqueue(e);
+                    throw e;
+                }
+            }); ;
+            stopwatch.Stop();
+            Console.WriteLine($"Tempo: {stopwatch.Elapsed}");
+            Console.WriteLine($"Quantidade registros: {results.Count}");
+        }
+
+        private static void TestConcurrentDictionaryCustom()
         {
             Console.WriteLine("## Concurrent Dictionary");
 
@@ -120,7 +138,7 @@ namespace Antlr4Exemplo
             {
                 try
                 {
-                    var result = Execute(scripts[i]);
+                    var result = ExemploHandler.Execute(scripts[i], null);
                     results.TryAdd(i, (decimal)result);
                 }
                 catch (Exception e)

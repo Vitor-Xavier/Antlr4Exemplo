@@ -186,6 +186,13 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitNumberAtom([NotNull] ExemploParser.NumberAtomContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>textAtom</c>
+	/// labeled alternative in <see cref="ExemploParser.atom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTextAtom([NotNull] ExemploParser.TextAtomContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>nullAtom</c>
 	/// labeled alternative in <see cref="ExemploParser.atom"/>.
 	/// </summary>

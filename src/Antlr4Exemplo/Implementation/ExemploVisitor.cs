@@ -51,6 +51,9 @@ namespace Antlr4Exemplo.Implementation
                 throw new Exception($"Não foi possível converter o valor '{context.GetText()}' em número.");
         }
 
+        public override ExemploValue VisitTextAtom([NotNull] ExemploParser.TextAtomContext context) =>
+            new ExemploValue(context.TEXT().GetText()?.Replace("\"", string.Empty));
+
         public override ExemploValue VisitNullAtom([NotNull] ExemploParser.NullAtomContext context) =>
             new ExemploValue(null);
 
@@ -186,14 +189,16 @@ namespace Antlr4Exemplo.Implementation
 
         public override ExemploValue VisitIfStatement([NotNull] ExemploParser.IfStatementContext context)
         {
-            if (Visit(context.comparison_expression()).Value is bool value && value)
+            if (Visit(context.comparison_expression(0)).Value is bool value && value)
             {
                 Visit(context.if_body());
             }
             else
             {
-                if (context.else_body() != null)
-                    Visit(context.else_body());
+                if (context.IF(1).GetText() != null && Visit(context.comparison_expression(0)).Value is bool elseValue && elseValue)
+                    Visit(context.else_body(0));
+                else if (context.else_body(1) != null)
+                    Visit(context.else_body(1));
             }
 
             return new ExemploValue(null);

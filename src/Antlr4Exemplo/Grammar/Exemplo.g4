@@ -64,7 +64,7 @@ assignment
 	;
 
 statement
-    : IF LPAREN comparison_expression RPAREN LBRACE if_body RBRACE (ELSE LBRACE else_body RBRACE)? #ifStatement
+    : IF LPAREN comparison_expression RPAREN LBRACE if_body RBRACE (ELSE IF LPAREN comparison_expression RPAREN LBRACE else_body RBRACE)* (ELSE LBRACE else_body RBRACE)? #ifStatement
     ;
 
 if_body
@@ -77,6 +77,7 @@ else_body
 
 atom
     : NUMBER #numberAtom
+    | TEXT #textAtom
     | NULL #nullAtom
     | variable #variableAtom
     | external #externalAtom
@@ -160,3 +161,4 @@ VAR: 'var';
 
 NUMBER: '-'?[0-9]+('.'[0-9]+)?;
 VARIABLE: [a-zA-Z_][a-zA-Z_0-9]*;
+TEXT: '"' .*? '"';

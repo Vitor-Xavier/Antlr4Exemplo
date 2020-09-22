@@ -19,7 +19,7 @@ namespace Antlr4Exemplo.Implementation
         public static ExemploValue operator *(ExemploValue left, ExemploValue right) =>
             new ExemploValue((decimal)left * (decimal)right);
 
-        public static ExemploValue operator /(ExemploValue left, ExemploValue right) => 
+        public static ExemploValue operator /(ExemploValue left, ExemploValue right) =>
             new ExemploValue((decimal)left / (decimal)right);
 
         public static ExemploValue operator ==(ExemploValue left, ExemploValue right) => new ExemploValue(left.Equals(right));
@@ -64,11 +64,10 @@ namespace Antlr4Exemplo.Implementation
 
         public override int GetHashCode() => Value?.GetHashCode() ?? 0;
 
-        public override bool Equals(object obj) => true switch
-        {
-            _ when IsNumericValue() && obj.IsNumericType() => (decimal)this == decimal.Parse(obj.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture),
-            _ when Value is DateTime leftDate && obj is DateTime rightDate => leftDate == rightDate,
-            _ => Value == obj
-        };
+        public override bool Equals(object obj) => obj is ExemploValue value &&
+            (IsNumericValue() && value.IsNumericValue() ? (decimal)this == (decimal)value :
+            Value is DateTime leftDate && value.Value is DateTime rightDate ? leftDate == rightDate :
+            Value is string leftString && value.Value is string rightString ? leftString == rightString :
+            Value == obj);
     }
 }

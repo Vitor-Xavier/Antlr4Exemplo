@@ -34,6 +34,7 @@ NULL=33
 VAR=34
 NUMBER=35
 VARIABLE=36
+TEXT=37
 '='=1
 '+='=2
 '-='=3
