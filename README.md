@@ -6,7 +6,7 @@ Este projeto visa demonstrar alguns dos conceitos básicos da ferramenta Antlr4,
 
 ## O que é?
 
-ANTLR (ANother Tool for Language Recognition) é um poderoso gerador para leituea, processamento, execução, ou tradução  de texto estruturado ou arquivos binários. É comummente utilizado para arquitetar linguagens, ferramentas e frameworks. A partir de uma gramática, o ANTLR gera um analisador que pode executar e navegar em uma árvore estruturada.
+ANTLR (ANother Tool for Language Recognition) é um poderoso gerador para leitura, processamento, execução, ou tradução  de texto estruturado ou arquivos binários. É comumente utilizado para arquitetar linguagens, ferramentas e frameworks. A partir de uma gramática, o ANTLR gera um analisador que pode executar e navegar em uma árvore estruturada.
 
 ## Referências
 
