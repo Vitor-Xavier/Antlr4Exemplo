@@ -48,7 +48,7 @@ comparison_expression
     ;
 
 loop_expression
-    : WHILE LPAREN comparison_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
+    : WHILE LPAREN comparison_expression RPAREN LBRACE statement_block RBRACE #whileExpression
     ;
  
 null_coalescing_expression
@@ -64,15 +64,12 @@ assignment
 	;
 
 statement
-    : IF LPAREN comparison_expression RPAREN LBRACE if_body RBRACE (ELSE IF LPAREN comparison_expression RPAREN LBRACE else_body RBRACE)* (ELSE LBRACE else_body RBRACE)? #ifStatement
+    : IF LPAREN comparison_expression RPAREN statement_block (ELSE statement_block)? #ifStatement
     ;
 
-if_body
-    : rule_block* #ifBody
-    ;
-
-else_body
-    : rule_block* #elseBody
+statement_block
+    : LBRACE rule_block* RBRACE #statementBraceBlock
+    | rule_block #statementRuleBlock
     ;
 
 atom

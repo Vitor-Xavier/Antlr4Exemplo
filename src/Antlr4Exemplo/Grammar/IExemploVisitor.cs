@@ -165,19 +165,19 @@ public interface IExemploVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIfStatement([NotNull] ExemploParser.IfStatementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>ifBody</c>
-	/// labeled alternative in <see cref="ExemploParser.if_body"/>.
+	/// Visit a parse tree produced by the <c>statementBraceBlock</c>
+	/// labeled alternative in <see cref="ExemploParser.statement_block"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIfBody([NotNull] ExemploParser.IfBodyContext context);
+	Result VisitStatementBraceBlock([NotNull] ExemploParser.StatementBraceBlockContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>elseBody</c>
-	/// labeled alternative in <see cref="ExemploParser.else_body"/>.
+	/// Visit a parse tree produced by the <c>statementRuleBlock</c>
+	/// labeled alternative in <see cref="ExemploParser.statement_block"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitElseBody([NotNull] ExemploParser.ElseBodyContext context);
+	Result VisitStatementRuleBlock([NotNull] ExemploParser.StatementRuleBlockContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>numberAtom</c>
 	/// labeled alternative in <see cref="ExemploParser.atom"/>.

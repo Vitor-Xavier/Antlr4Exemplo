@@ -134,7 +134,7 @@ namespace Antlr4Exemplo.Implementation
             var right = Visit(context.arithmetic_expression(1));
 
             if (left.IsNumericValue() && right.IsNumericValue())
-                return new ExemploValue(Math.Pow((double)left, (double) right));
+                return new ExemploValue(Math.Pow((double)left, (double)right));
             throw new ArithmeticException("Não foi possível elevar o valor");
         }
 
@@ -144,10 +144,7 @@ namespace Antlr4Exemplo.Implementation
         public override ExemploValue VisitWhileExpression([NotNull] ExemploParser.WhileExpressionContext context)
         {
             while (bool.Parse(Visit(context.comparison_expression()).Value?.ToString()))
-            {
-                foreach (var ruleBlock in context.rule_block())
-                    Visit(ruleBlock);
-            }
+                Visit(context.statement_block());
 
             return new ExemploValue(null);
         }
@@ -189,22 +186,15 @@ namespace Antlr4Exemplo.Implementation
 
         public override ExemploValue VisitIfStatement([NotNull] ExemploParser.IfStatementContext context)
         {
-            if (Visit(context.comparison_expression(0)).Value is bool value && value)
-            {
-                Visit(context.if_body());
-            }
-            else
-            {
-                if (context.IF(1).GetText() != null && Visit(context.comparison_expression(0)).Value is bool elseValue && elseValue)
-                    Visit(context.else_body(0));
-                else if (context.else_body(1) != null)
-                    Visit(context.else_body(1));
-            }
+            if (Visit(context.comparison_expression()).Value is bool value && value)
+                Visit(context.statement_block(0));
+            else if (context.statement_block(1) != null)
+                Visit(context.statement_block(1));
 
             return new ExemploValue(null);
         }
 
-        public override ExemploValue VisitIfBody([NotNull] ExemploParser.IfBodyContext context)
+        public override ExemploValue VisitStatementBraceBlock([NotNull] ExemploParser.StatementBraceBlockContext context)
         {
             foreach (var ruleBlock in context.rule_block())
                 Visit(ruleBlock);
@@ -212,13 +202,7 @@ namespace Antlr4Exemplo.Implementation
             return new ExemploValue(null);
         }
 
-        public override ExemploValue VisitElseBody([NotNull] ExemploParser.ElseBodyContext context)
-        {
-            foreach (var ruleBlock in context.rule_block())
-                Visit(ruleBlock);
-
-            return new ExemploValue(null);
-        }
+        public override ExemploValue VisitStatementRuleBlock([NotNull] ExemploParser.StatementRuleBlockContext context) => Visit(context.rule_block());
 
         public override ExemploValue VisitCoalesceExpression([NotNull] ExemploParser.CoalesceExpressionContext context) =>
             new ExemploValue(Visit(context.atom()).Value ?? (context.null_coalescing_expression() != null ? Visit(context.null_coalescing_expression()).Value : null));

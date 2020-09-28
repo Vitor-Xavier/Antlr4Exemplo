@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Antlr4Exemplo.Extensions
 {
@@ -22,6 +20,8 @@ namespace Antlr4Exemplo.Extensions
                 case TypeCode.Double:
                 case TypeCode.Single:
                     return true;
+                case TypeCode.String:
+                    return decimal.TryParse(o.ToString(), out decimal _);
                 default:
                     return false;
             }

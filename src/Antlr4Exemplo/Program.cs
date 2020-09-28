@@ -22,7 +22,7 @@ namespace Antlr4Exemplo
 
             var exemploErrorListener = new ExemploErrorListener();
             var parseTree = ExemploHandler.Evaluate(text, exemploErrorListener);
-            var result = ExemploHandler.Execute(parseTree, new Dictionary<string, ExemploValue> { { "Teste", new ExemploValue(10) } });
+            var result = ExemploHandler.Execute(parseTree, new Dictionary<string, ExemploValue> { { "Teste", new ExemploValue(1) } });
 
             if (exemploErrorListener.ExemploErrors.Any())
             {
@@ -36,7 +36,7 @@ namespace Antlr4Exemplo
 
             Console.WriteLine("## Exemplo");
             Console.WriteLine($"Fórmula: {text}");
-            Console.WriteLine($"Resultado Final: {result.Value}");
+            Console.WriteLine($"Resultado Final: {result.Value}\n");
 
             TestConcurrentDictionary();
         }
@@ -50,21 +50,16 @@ namespace Antlr4Exemplo
 
             string texto = @"
                 var result = null;
-                if (@Operation == ""+"") {
+                if (@Operation == ""+"")
                     result = @FirstValue + @SecondValue;
-                }
-                else if (@Operation == ""-"") {
+                else if (@Operation == ""-"")
                     result = @FirstValue - @SecondValue;
-                }
-                else if (@Operation == ""*"") {
+                else if (@Operation == ""*"")
                     result = @FirstValue * @SecondValue;
-                }
-                else if (@Operation == ""/"") {
+                else if (@Operation == ""/"")
                     result = @FirstValue / @SecondValue;
-                }
-                else if (@Operation == ""^"") {
+                else if (@Operation == ""^"")
                     result = @FirstValue ^ @SecondValue;
-                }
                 result;
             ";
 
