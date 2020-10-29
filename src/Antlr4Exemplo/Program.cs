@@ -39,7 +39,7 @@ namespace Antlr4Exemplo
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}\n");
 
-            var source = new CancellationTokenSource();
+            using var source = new CancellationTokenSource();
 
             _ = Task.Run(() =>
             {
