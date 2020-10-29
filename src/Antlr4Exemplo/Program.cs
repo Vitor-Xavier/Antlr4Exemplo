@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Antlr4Exemplo
@@ -38,14 +39,28 @@ namespace Antlr4Exemplo
             Console.WriteLine($"Fórmula: {text}");
             Console.WriteLine($"Resultado Final: {result.Value}\n");
 
-            TestConcurrentDictionary();
+            var source = new CancellationTokenSource();
+
+            _ = Task.Run(() =>
+            {
+                Console.WriteLine("Para cancelar a execução do teste pressione Enter.");
+                var input = Console.ReadKey();
+                if (input.Key == ConsoleKey.Enter) source.Cancel();
+            });
+            try
+            {
+                TestConcurrentDictionary(source.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Operação foi cancelada pelo usuário");
+            }
         }
 
-        private static void TestConcurrentDictionary()
+        private static void TestConcurrentDictionary(CancellationToken token)
         {
             Console.WriteLine("## Concurrent Dictionary");
 
-            var exceptions = new ConcurrentQueue<Exception>();
             var results = new ConcurrentDictionary<int, decimal>();
 
             string texto = @"
@@ -78,7 +93,7 @@ namespace Antlr4Exemplo
 
             var operacoes = new string[] { "+", "-", "*", "/", "^" };
 
-            int size = 100000;
+            int size = 1000000;
             var scripts = new IDictionary<string, ExemploValue>[size];
 
             var random = new Random();
@@ -89,21 +104,21 @@ namespace Antlr4Exemplo
                     { "SecondValue", new ExemploValue(random.Next(1, 250)) }
                 };
 
+            var parallelOptions = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = Environment.ProcessorCount
+            };
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            Parallel.For(0, size, i =>
+            Parallel.For(0, size, parallelOptions, i =>
             {
-                try
-                {
-                    var result = ExemploHandler.Execute(parseTree, scripts[i]);
-                    results.TryAdd(i, (decimal)result);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Enqueue(e);
-                    throw e;
-                }
-            }); ;
+                var result = ExemploHandler.Execute(parseTree, scripts[i]);
+                results.TryAdd(i, (decimal)result);
+
+                parallelOptions.CancellationToken.ThrowIfCancellationRequested();
+            });
             stopwatch.Stop();
             Console.WriteLine($"Tempo: {stopwatch.Elapsed}");
             Console.WriteLine($"Quantidade registros: {results.Count}");
